@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mengxuegu.web.mapper.SysPermissionMapper">
+
+    <select id="selectPermissionByUserId" resultType="SysPermission">
+        select distinct
+          p.id, p.parent_id, p.name, p.code, p.url, p.type, p.icon, p.remark, p.create_date, p.update_date
+        from sys_user u
+        left join sys_user_role ur on u.id = ur.user_id
+        left join sys_role r on r.id = ur.role_id
+        left join sys_role_permission rp on r.id = rp.role_id
+        left join sys_permission p on p.id = rp.permission_id
+        where u.id = #{userId}
+    </select>
+
+    <select id="selectPermissionByRoleId" resultType="SysPermission">
+        select distinct p.*
+        from sys_permission p
+        join sys_role_permission rp on p.id = rp.permission_id
+        join sys_role r on r.id = rp.role_id
+        where rp.role_id = #{roleId}
+        order by p.id
+    </select>
+</mapper>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mengxuegu.web.mapper.SysUserMapper">
+
+    <select id="selectPage" resultType="SysUser">
+        select
+            `id`,
+            `username`,
+            `password`,
+            `is_account_non_expired`,
+            `is_account_non_locked`,
+            `is_credentials_non_expired`,
+            `is_enabled`,
+            `nick_name`,
+            `mobile`,
+            `email`,
+            `create_date`,
+            `update_date`
+        from sys_user
+        where 1=1
+        <if test="sysUser.username != null and sysUser.username != ''">
+            and username like concat('%', #{sysUser.username}, '%')
+        </if>
+        <if test="sysUser.mobile != null and sysUser.mobile != ''">
+            and mobile = #{sysUser.mobile}
+        </if>
+    </select>
+
+    <delete id="deleteUserRoleByUserId">
+        delete from sys_user_role
+        where user_id = #{userId}
+    </delete>
+
+    <insert id="saveUserRole" keyProperty="id">
+        insert into sys_user_role (user_id, role_id) values
+        <foreach collection="roleIds" item="item" separator=",">
+            (#{userId}, #{item})
+        </foreach>
+    </insert>
+</mapper>
